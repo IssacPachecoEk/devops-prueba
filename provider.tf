@@ -13,10 +13,10 @@ terraform {
 }
 
 provider "aws" {
-  region = var.tags_general.region
+  region = var.tags_general.region["virginia"] 
   access_key = var.access_key
   secret_key = var.secret_key
-  alias  =    var.alias
+  alias      = var.tags_general.alias["virginia"]
   default_tags {
     tags_general = var.tags_general
   }

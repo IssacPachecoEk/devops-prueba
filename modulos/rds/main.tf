@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"  # Cambia esto a la región deseada
-}
-
 resource "aws_db_instance" "postgresql" {
   allocated_storage               = var.allocated_storage
   engine                          = "postgres"

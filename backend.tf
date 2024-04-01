@@ -2,6 +2,9 @@
 #preguntar si se sube el codigo de la pagina perse o de infra(terraform.tfstate)
 module "bucket_backend" {
   source      = "./modulos/s3"
+  providers = {
+  aws = var.tags_general.alias["virginia"]
+  }
 }
 
 # falta el modulo de aim para el rol para subir el archivo terraform.tfstate al bucket

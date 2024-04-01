@@ -1,5 +1,10 @@
-# modulo de iam para los permisos
-
+# modulo de iam para la politica del bucket
+module "bucket_iam" {
+  source      = "./modulos/iam"
+  providers = {
+    aws = var.tags_general.alias["virginia"]
+  }
+}
 # se define el recurso del servico s3 para almacenar el archivo terraform.tfstate
 resource "aws_s3_bucket" "bucket_backend" {
   bucket = "${var.bucket_name}-${local.s3_sufijo}"

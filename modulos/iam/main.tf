@@ -1,5 +1,5 @@
-# para el bucket s3
-data "aws_iam_policy_document" "allow_access_from_another_account" {
+# data con la politica para el bucket s3 del backend
+data "aws_iam_policy_document" "iam_politica_bucket" {
   statement {
     principals {
       type        = "AWS"
