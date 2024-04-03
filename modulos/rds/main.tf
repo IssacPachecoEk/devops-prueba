@@ -28,12 +28,6 @@ resource "aws_db_instance" "postgresql" {
   deletion_protection             = var.deletion_protection
   enabled_cloudwatch_logs_exports = var.cloudwatch_logs_exports
 
-  tags = merge(
-    {
-      Name        = "DatabaseServer",
-      Project     = var.project,
-      Environment = var.environment
-    },
-    var.tags
-  )
+  tags   = var.tags_bucket
+  
 }

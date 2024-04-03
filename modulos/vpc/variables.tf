@@ -1,51 +1,69 @@
-variable "virginia_cidr" {
-  description = "CIDR Virginia"
+variable "vpc_cidr_block" {
+  description = "CIDR de la vpc"
   type        = string
+  default     = "10.10.0.0/16"
+  nullable = false
 }
 
-variable "public_subnet" {
-  description = "CIDR public subnet"
-  type        = string
-}
-
-variable "private_subnet" {
-  description = "CIDR private subnet"
-  type        = string
-}
-
-variable "subnets" {
-  description = "Lista de subnets"
+variable "vpc_subnets" {
+  description = "Lista de subnets publica y privada"
   type        = list(string)
+  default     = ["10.10.1.0/24", "10.10.2.0/24"]
+  nullable = false
 }
 
-variable "tags" {
-  description = "Tags del proyecto"
-  type        = map(string)
-}
-
-variable "sg_ingress_cidr" {
-  description = "CIDR for ingress traffic"
+variable "vpc_route_table_cidr_block" {
+  description = ""
   type        = string
-
+  default     = "0.0.0.0/0"
+  nullable = false
 }
 
-variable "ec2_specs" {
-  description = "Parametros de la instancia"
-  type        = map(string)
-
-}
-
-variable "enable_monitoring" {
-  description = "Habilita el despliegue de un servidor de monitoreo"
-  type        = number
-
-
+variable "vpc_sg_name_instance" {
+  description = "Nombre del grupo de seguridad de la instancia"
+  type        = string
+  default     = "sg-instancia-devops-prueba"
+  nullable = false
 }
 
 variable "ingress_ports_list" {
-  description = "Lista de puertos de ingress"
+  description = "Lista de puertos del ingress por SSH Y HTTP"
   type        = list(number)
-
+  default     = [80,22]
+  nullable    = false
 }
 
+variable "ingress_protocol" {
+  description = "El tipo de protocolo del ingress"
+  type        = string
+  default     = "tcp"
+  nullable    = false
+}
 
+variable "sg_ingress_cidr_blocks" {
+  description = "CIDR para el trafico del ingress"
+  type        = string
+  default     = "0.0.0.0/0"
+  nullable    = false
+}
+
+variable "egress_ports_list" {
+  description = "Lista de puertos del egress por SSH Y HTTP"
+  type        = list(number)
+  default     = [0]
+  nullable    = false
+}
+
+variable "egress_protocol" {
+  description = "El tipo de protocolo del egress"
+  type        = string
+  default     = "-1"
+  nullable    = false
+}
+
+variable "sg_egress_cidr_blocks" {
+  description = "CIDR para el trafico del egress"
+  type        = string
+  default     = "0.0.0.0/0"
+  nullable    = false
+}

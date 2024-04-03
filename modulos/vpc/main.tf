@@ -1,81 +1,76 @@
-resource "aws_vpc" "vpc_virginia" {
-  cidr_block = var.virginia_cidr
+# se define una VPC
+resource "aws_vpc" "vpc_devops_prueba" {
+  cidr_block = var.vpc_cidr_block
   tags = {
-    "Name" = "vpc_virginia-${local.sufix}"
   }
 }
-
-resource "aws_subnet" "public_subnet" {
-  vpc_id                  = aws_vpc.vpc_virginia.id
-  cidr_block              = var.subnets[0]
+# se declara una subnet pública
+resource "aws_subnet" "subnet_public" {
+  vpc_id                  = aws_vpc.vpc_devops_prueba.id
+  cidr_block              = var.vpc_subnets[0]
   map_public_ip_on_launch = true
   tags = {
-    "Name" = "public_subnet-${local.sufix}"
   }
 }
-
-resource "aws_subnet" "private_subnet" {
-  vpc_id     = aws_vpc.vpc_virginia.id
-  cidr_block = var.subnets[1]
+# se declara una subnet privada
+resource "aws_subnet" "subnet_private" {
+  vpc_id     = aws_vpc.vpc_devops_prueba.id
+  cidr_block = var.vpc_subnets[1]
   tags = {
-    "Name" = "private_subnet-${local.sufix}"
   }
   depends_on = [
-    aws_subnet.public_subnet
+    aws_subnet.subnet_public
   ]
 }
-
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc_virginia.id
+# Se crea una gateway de internet
+resource "aws_internet_gateway" "vpc_internet_gateway" {
+  vpc_id = aws_vpc.vpc_devops_prueba.id
 
   tags = {
-    Name = "igw vpc virginia-${local.sufix}"
   }
 }
-
-
-resource "aws_route_table" "public_crt" {
-  vpc_id = aws_vpc.vpc_virginia.id
-
+# Se crea una tabla de ruteo
+resource "aws_route_table" "vpc_route_table" {
+  vpc_id = aws_vpc.vpc_devops_prueba.id
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
+    cidr_block = var.vpc_route_table_cidr_block
+    gateway_id = aws_internet_gateway.vpc_internet_gateway.id
   }
-
   tags = {
-    Name = "public crt-${local.sufix}"
   }
 }
-
-resource "aws_route_table_association" "crta_public_subnet" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.public_crt.id
+# Asocia la tabla de ruteo con la subnet pública
+resource "aws_route_table_association" "vpc_crta_subnet_public" {
+  subnet_id      = aws_subnet.vpc_crta_subnet_public.id
+  route_table_id = aws_route_table.vpc_route_table.id
+  tags = {
+  }
 }
-
-resource "aws_security_group" "sg_public_instance" {
-  name        = "Public Instance SG"
-  description = "Allow SSH inbound traffic and ALL egress traffic"
-  vpc_id      = aws_vpc.vpc_virginia.id
-
+# se crea grupo de seguridad para la instancia
+resource "aws_security_group" "vpc_security_group_instance" {
+  name        = var.vpc_sg_name_instance
+  description = "grupo de seguridad para la instancia de devops prueba"
+  vpc_id      = aws_vpc.vpc_devops_prueba.id
+  # Regla para permitir el tráfico entrante a la lista de los puertos (SSH Y HTTP)
   dynamic "ingress" {
     for_each = var.ingress_ports_list
     content {
       from_port   = ingress.value
       to_port     = ingress.value
-      protocol    = "tcp"
-      cidr_blocks = [var.sg_ingress_cidr]
+      protocol    = var.ingress_protocol
+      cidr_blocks = [var.sg_ingress_cidr_blocks]
     }
   }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  # Regla para permitir el tráfico saliente a todas partes
+  dynamic "egress" {
+    for_each = var.egress_ports_list
+    content {
+      from_port        = egress.value
+      to_port          = egress.value
+      protocol         = var.egress_protocol
+      cidr_blocks      = [var.sg_egress_cidr_blocks]
+    }
   }
-
   tags = {
-    Name = "Public Instance SG-${local.sufix}"
   }
 }

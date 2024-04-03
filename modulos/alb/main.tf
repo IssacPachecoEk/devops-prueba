@@ -1,3 +1,10 @@
+module "acm_web_devops" {
+  source       = "../modulos/acm"
+  version      = local.version
+  backend_name = local.bucket_name_sufijo
+  tags         = local.common_tag
+}
+
 resource "aws_lb" "example_lb" {
   name               = "example-lb"
   internal           = false  # Cambia esto a true si deseas un LB interno
@@ -10,7 +17,7 @@ resource "aws_lb" "example_lb" {
   }
 
   tags = {
-    Environment = "production"
+    tags = local.common_tag
   }
 }
 
@@ -19,7 +26,7 @@ resource "aws_lb_listener" "front_end" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+  certificate_arn   = module.acm_web_devops.output_certificate_arn
 
   default_action {
     type             = "forward"

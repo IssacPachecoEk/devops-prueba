@@ -11,14 +11,17 @@ terraform {
   }
   required_version = "=>1.7.5"
 }
-
 provider "aws" {
-  region = var.tags_general.region["virginia"] 
+  region = local.region["virginia"] 
+  # no recomienda poner las llaves de la cuenta del usuario, sino por variables de entorno del sistema
   access_key = var.access_key
+  # lo puse aqui solo por temas de desmostración
   secret_key = var.secret_key
-  alias      = var.tags_general.alias["virginia"]
+  # aqui otra forma de usar las credenciales, pasandole el path de las credenciales
+  shared_credentials_file = file("${var.location_credentials_file}")
+  profile    = var.profile_aws
+  alias      = local.alias["virginia"]
   default_tags {
-    tags_general = var.tags_general
+    tags = local.common_tag
   }
-
 }

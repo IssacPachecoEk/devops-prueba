@@ -1,13 +1,27 @@
-#variable para la clave publica
+#variable para el valor de la clave publica del usuario
+variable "location_credentials_file" {
+  description = "path en donde se encuentr el archivo de las credenciales"
+  type        = string
+  sensitive   = true
+  nullable = false
+}
+#variable para el valor de la clave publica del usuario
 variable "access_key" {
   description = "llave publica"
   type        = string
   sensitive   = true
   nullable = false
 }
-#variable para la clave secreta
+#variable para la valor de la clave secreta del usuario
 variable "secret_key" {
   description = "llave secreta"
+  type        = string
+  sensitive   = true
+  nullable = false
+}
+#el nombre del perfil que se esta usando
+variable "profile_aws" {
+  description = "nombre del perfil de aws"
   type        = string
   sensitive   = true
   nullable = false
@@ -23,31 +37,4 @@ variable "profile_backend" {
   type        = string
   sensitive   = true
   nullable = false
-}
-#esta variable se usa en todos los recursos y contiene toda la información general del proyecto 
-variable "tags_general" {
-  description = "Tags generales del despliegue por cada proyecto"
-  nullable = false
-  type = object ({
-        proyecto = string
-        ambiente = string
-        region   = map(string)
-        alias    = map(string)
-        version  = number
-        fecha    = string
-    })
-  default = {
-        proyecto = "devops_prueba"
-        ambiente = "dev"
-        region = {
-        "virginia"  = "us-east-1", 
-        "oregon"      = "us-west-2"
-        }
-        alias = {
-        "virginia"  = "east", 
-        "ohio"      = "west"
-        }
-        version  = 1
-        fecha   = "2024-04-01"
-    }
 }

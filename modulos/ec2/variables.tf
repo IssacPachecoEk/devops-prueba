@@ -1,7 +1,7 @@
 variable "ami_instancia_ec2" {
   description = "nombre de la ami de instancia ec2"
   type        = string
-  default     =  ""
+  default = "ami-0aa7d40eeae50c9a9"
   nullable = false
   validation {
     condition     = length(var.image_id) > 4 && substr(var.image_id, 0, 4) == "ami-"
