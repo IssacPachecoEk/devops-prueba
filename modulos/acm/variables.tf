@@ -1,12 +1,12 @@
-variable "nombre_dominio_certificado" {
+variable "name_domain_certificado" {
   description = "Nombre del certificado para dominio"
   type        = string
   default     = "devopspruebadev.com"
-  nullable = false
+  nullable    = false
 }
-variable "metodo_validacion" {
+variable "validation_method" {
   description = "Metodo de validacion del certificado"
   type        = string
   default     = "DNS"
-  nullable = false
+  nullable    = false
 }

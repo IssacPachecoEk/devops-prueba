@@ -1,8 +1,7 @@
 # se define una VPC
 resource "aws_vpc" "vpc_devops_prueba" {
   cidr_block = var.vpc_cidr_block
-  tags = {
-  }
+  tags       = {}
 }
 # se declara una subnet pública
 resource "aws_subnet" "subnet_public" {
@@ -41,13 +40,11 @@ resource "aws_route_table" "vpc_route_table" {
 }
 # Asocia la tabla de ruteo con la subnet pública
 resource "aws_route_table_association" "vpc_crta_subnet_public" {
-  subnet_id      = aws_subnet.vpc_crta_subnet_public.id
+  subnet_id      = aws_subnet.subnet_public.id
   route_table_id = aws_route_table.vpc_route_table.id
-  tags = {
-  }
 }
-# se crea grupo de seguridad para la instancia
-resource "aws_security_group" "vpc_security_group_instance" {
+# se crea grupo de seguridad
+resource "aws_security_group" "vpc_security_group" {
   name        = var.vpc_sg_name_instance
   description = "grupo de seguridad para la instancia de devops prueba"
   vpc_id      = aws_vpc.vpc_devops_prueba.id
@@ -62,14 +59,12 @@ resource "aws_security_group" "vpc_security_group_instance" {
     }
   }
   # Regla para permitir el tráfico saliente a todas partes
-  dynamic "egress" {
-    for_each = var.egress_ports_list
-    content {
-      from_port        = egress.value
-      to_port          = egress.value
-      protocol         = var.egress_protocol
-      cidr_blocks      = [var.sg_egress_cidr_blocks]
-    }
+  egress {
+    from_port        = var.egress_port
+    to_port          = var.egress_port
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
   tags = {
   }

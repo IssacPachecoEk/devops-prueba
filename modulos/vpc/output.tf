@@ -1,9 +1,10 @@
 output "vpc_public_subnets" {
-  description = "IDs of the VPC's public subnets"
-  value       = module.vpc.public_subnets
+  description = "retorna la subnet publica creada"
+  value       = aws_subnet.subnet_public.id
 }
 
-output "ec2_instance_public_ips" {
-  description = "Public IP addresses of EC2 instances"
-  value       = module.ec2_instances[*].public_ip
+output "out_vpc_security_group" {
+  description = "retorna el grupo de seguridad"
+  value       = aws_security_group.vpc_security_group.id
 }
+

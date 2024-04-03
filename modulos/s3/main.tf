@@ -1,13 +1,13 @@
 # modulo de iam para la politica del bucket
-module "bucket_iam" {
-  source      = "../modulos/iam"
-  version     = local.version
-  # tags        = ""
-}
+# module "bucket_iam" {
+#   source = "../modulos/iam"
+#   # version = local.version
+#   # tags        = ""
+# }
 # se define el nombre del s3 para almacenar el archivo terraform.tfstate
 resource "aws_s3_bucket" "bucket_name" {
   bucket = var.bucket_name
-  tags   = var.tags_bucket
+  # tags   = var.tags_bucket
 }
 # se declara el versionamiento de los objetos del bucket para terraform.tfstate
 resource "aws_s3_bucket_versioning" "bucket_versioning" {
@@ -18,7 +18,7 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
 }
 # declaro el acceso publico al bucket como bloqueado
 resource "aws_s3_bucket_public_access_block" "bucket_public_access_block" {
-  bucket = aws_s3_bucket.bucket_name.id
+  bucket                  = aws_s3_bucket.bucket_name.id
   block_public_acls       = var.bucket_block_public_acls
   block_public_policy     = var.bucket_block_public_policy
   ignore_public_acls      = var.bucket_ignore_public_acls
