@@ -1,43 +1,85 @@
-# crea el rol para tener permisos de codebuild
-resource "aws_iam_role" "role_code_build" {
-  name               = "codebuil-service-role"
-  assume_role_policy = data.aws_iam_policy_document.aws_iam_policy_document.json
-}
-# obtiene la politica para el rol de codebuild
-data "aws_iam_policy_document" "aws_iam_policy_document" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["codebuild.amazonaws.com"]
-    }
-  }
-}
-# se atacha el rol de codebuild con permisos de administrador
-resource "aws_iam_role_policy_attachment" "attach_codebuild_permissions" {
-  role       = aws_iam_role.role_code_build.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
-# se crea el rol para codepipeline
-resource "aws_iam_role" "codepipeline_role" {
-  name               = "codepipeline-service-role"
+resource "aws_iam_role" "tf-codepipeline-role" {
+  name = "tf-codepipeline-role"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
       "Principal": {
         "Service": "codepipeline.amazonaws.com"
       },
-      "Action": "sts:AssumeRole"
+      "Effect": "Allow",
+      "Sid": ""
     }
   ]
 }
 EOF
 }
-#  se atacha el rol de codebuild con permisos de administrador
-resource "aws_iam_role_policy_attachment" "attach_codepipeline_permissions" {
-  role       = aws_iam_role.codepipeline_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+resource "aws_iam_role_policy_attachment" "tf-cicd-pipeline-attachment" {
+  policy_arn = aws_iam_policy.tf-cicd-pipeline-policy.arn
+  role       = aws_iam_role.tf-codepipeline-role.id
+}
+data "aws_iam_policy_document" "tf-cicd-pipeline-policies" {
+  statement {
+    sid       = ""
+    actions   = ["codestar-connections:UseConnection"]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+  statement {
+    sid       = ""
+    actions   = ["cloudwatch:*", "s3:*", "codebuild:*"]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+}
+resource "aws_iam_policy" "tf-cicd-pipeline-policy" {
+  name        = "tf-cicd-pipeline-policy"
+  path        = "/"
+  description = "Pipeline policy"
+  policy      = data.aws_iam_policy_document.tf-cicd-pipeline-policies.json
+}
+data "aws_iam_policy_document" "tf-cicd-build-policies" {
+  statement {
+    sid       = ""
+    actions   = ["logs:*", "s3:*", "codebuild:*", "secretsmanager:*", "iam:*"]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+}
+resource "aws_iam_policy" "tf-cicd-build-policy" {
+  name        = "tf-cicd-build-policy"
+  path        = "/"
+  description = "Codebuild policy"
+  policy      = data.aws_iam_policy_document.tf-cicd-build-policies.json
+}
+resource "aws_iam_role" "tf-codebuild-role" {
+  name               = "tf-codebuild-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "codebuild.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "tf-cicd-codebuild-attachment1" {
+  policy_arn = aws_iam_policy.tf-cicd-build-policy.arn
+  role       = aws_iam_role.tf-codebuild-role.id
+}
+
+resource "aws_iam_role_policy_attachment" "tf-cicd-codebuild-attachment2" {
+  policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+  role       = aws_iam_role.tf-codebuild-role.id
 }

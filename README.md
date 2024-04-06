@@ -11,11 +11,17 @@ Diseñar la infraestructura utilizando Terraform, incluyendo:
 
 ## Indice
 
+- ✅ [CODEPIPELINE](#codepipeline)
 - ✅ [Ec2](#ec2)
 - ✅ [S3](#s3)
 - ✅ [RDS](#rds)
 - ✅ [PROPUESTA](#propuesta)
 
+#### CODEPIPELINE
+Aqui se evidencia que se puedo desplegar en terraform desde el servicio "codepipeline".
+![doc](documentation_images/codepipeline_menu.png)
+![doc](documentation_images/codepipeline_plan.png)
+![doc](documentation_images/codepipeline_build.png)
 #### Ec2
 Se crea un instancia con dos subnet publica y privada, inicialmente se tenia planeado usar
 los servicios de "ROUTE 53", "CERTIFICATE MANAGER" y "CLOUDWATCH", pero por cuestión de tiempo. 
