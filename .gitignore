@@ -3,5 +3,5 @@ terraform.tfvars
 .infracost
 .terraform.lock.hcl
 *.tfvars
-*..tfstate
+*.tfstate
 .tfstate.backup
