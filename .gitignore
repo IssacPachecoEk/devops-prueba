@@ -1,0 +1,6 @@
+terraform.tfvars
+.terraform
+.infracost
+.terraform.lock.hcl
+*.tfvars
+*.tfvars.backup
