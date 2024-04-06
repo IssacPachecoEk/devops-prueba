@@ -1,21 +1,30 @@
 # principal recurso
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
+  enable_dns_hostnames = true
   tags = {
     Name = "vpc-devops"
     tags_all = jsonencode(var.common_tag)
   }
 }
-
 # se declara una subred pública
 resource "aws_subnet" "subnet_public" {
-  for_each                = { for indice, valor_az_name in local.az_names : indice => valor_az_name }
+  #for_each                = { for indice, valor_az_name in local.az_names : indice => valor_az_name }
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.${each.key}.0/24"
-  availability_zone       = local.az_names[each.key]
+  cidr_block              = var.vpc_subnet_public #"10.10.${each.key}.0/24"
+  # availability_zone       = "us-east-1a" #local.az_names[each.key]
   map_public_ip_on_launch = var.vpc_map_public_ip_on_launch
  tags = {
-    Name = "subnet-${each.key + 1}"
+    Name = "subnet-publica" #"subnet-${each.key + 1}"
+    tags_all = jsonencode(var.common_tag)
+  }
+}
+# se declara una subred privada
+resource "aws_subnet" "subnet_private" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.vpc_subnet_private
+ tags = {
+    Name = "subnet-privada"
     tags_all = jsonencode(var.common_tag)
   }
 }
@@ -27,11 +36,14 @@ resource "aws_internet_gateway" "vpc_internet_gateway" {
     tags_all = jsonencode(var.common_tag)
   }
 }
+
 # Se crea una tabla de ruteo
 resource "aws_route_table" "vpc_route_table" {
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = var.vpc_route_table_cidr_block
+    cidr_block = "0.0.0.0/0" #var.vpc_route_table_cidr_block
+    # nat_gateway_id = aws_nat_gateway.nat_gateway.id
+    #instance_id = aws_instance.main.id
     gateway_id = aws_internet_gateway.vpc_internet_gateway.id
   }
   tags = {
@@ -39,12 +51,16 @@ resource "aws_route_table" "vpc_route_table" {
     tags_all = jsonencode(var.common_tag)
   }
 }
-# Asocia la tabla de ruteo con la subnet pública
-resource "aws_route_table_association" "vpc_crta_subnet_public" {
-  count          = length(aws_subnet.subnet_public)
-  subnet_id      = aws_subnet.subnet_public[count.index].id
+# Asocia la tabla de ruteo con la subnet privada    por mejorrr!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+resource "aws_route_table_association" "private_association" {
+  for_each       = {
+    "public_subnet"  = aws_subnet.subnet_public.id,
+    "private_subnet" = aws_subnet.subnet_private.id
+  }
+  subnet_id      = each.value
   route_table_id = aws_route_table.vpc_route_table.id
 }
+
 # se crea grupo de seguridad
 resource "aws_security_group" "vpc_security_group" {
   name        = var.vpc_sg_name_instance

@@ -16,6 +16,6 @@ resource "aws_route53_record" "main" {
   name       = "${var.subdomain_name}.${var.domain_name}"
   type       = var.record_type
   ttl        = var.ttl_time
-  records    = [for ec2 in module.ec2.output_instance_public_ip : ec2]
+  records    = [module.ec2.output_instance_public_ip] #[for ec2 in module.ec2.output_instance_public_ip : ec2]
   depends_on = [module.ec2.main]
 }

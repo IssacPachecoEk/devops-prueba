@@ -4,20 +4,30 @@ variable "vpc_cidr_block" {
   default     = "10.10.0.0/16"
   nullable    = false
 }
+variable "vpc_subnet_public" {
+  description = "CIDR de la subred publica"
+  type        = string
+  default     = "10.10.1.0/24"
+  nullable    = false
+}
+variable "vpc_subnet_private" {
+  description = "CIDR de la subred privada"
+  type        = string
+  default     = "10.10.2.0/24"
+  nullable    = false
+}
 variable "vpc_map_public_ip_on_launch" {
   description = "valida asignación un dirección IP pública"
   type        = bool
   default     = true
   nullable    = false
 }
-
 variable "vpc_route_table_cidr_block" {
   description = "tabla de enrutamiento"
   type        = string
   default     = "0.0.0.0/0"
   nullable    = false
 }
-
 variable "vpc_sg_name_instance" {
   description = "Nombre del grupo de seguridad de la instancia"
   type        = string
