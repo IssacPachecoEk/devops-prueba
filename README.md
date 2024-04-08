@@ -18,10 +18,14 @@ Diseñar la infraestructura utilizando Terraform, incluyendo:
 - ✅ [PROPUESTA](#propuesta)
 
 #### CODEPIPELINE
-Aqui se evidencia que se puedo desplegar en terraform desde el servicio "codepipeline".
-![doc](documentation_images/codepipeline_menu.png)
-![doc](documentation_images/codepipeline_plan.png)
-![doc](documentation_images/codepipeline_build.png)
+Aqui se evidencia que se puedo desplegar en terraform desde el servicio "codepipeline", 
+al igua que la arquitectura que se uso y en cual me base para hacer la mia propia.
+![doc](documentation_images/arquitectura_codepipeline.png)
+Referencia hecha por AWS oficial [enlance](https://docs.aws.amazon.com/es_es/prescriptive-guidance/latest/patterns/create-a-ci-cd-pipeline-to-validate-terraform-configurations-by-using-aws-codepipeline.html)
+![doc](documentation_images/aws_referencia.png)
+Evidencias
+![doc](documentation_images/codepipeline_stages.png)
+![doc](documentation_images/codepipeline_log.png)
 #### Ec2
 Se crea un instancia con dos subnet publica y privada, inicialmente se tenia planeado usar
 los servicios de "ROUTE 53", "CERTIFICATE MANAGER" y "CLOUDWATCH", pero por cuestión de tiempo. 

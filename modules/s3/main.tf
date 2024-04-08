@@ -29,7 +29,7 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership_controls" {
 resource "aws_s3_object" "object" {
   bucket       = aws_s3_bucket.main.id
   for_each     = fileset(var.path_object, var.source_object)
-  content_type = each.value #var.content_type_object
-  key          = each.value #var.key_object
-  source       = "${var.path_object}/${each.value}" #var.source_object
+  content_type = each.value 
+  key          = each.value 
+  source       = "${var.path_object}/${each.value}"
 }

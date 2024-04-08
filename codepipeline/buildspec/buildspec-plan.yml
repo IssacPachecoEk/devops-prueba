@@ -4,6 +4,10 @@ phases:
     commands:
       - terraform init
       - terraform validate
+      - ls -la
   build:
     commands:
       - terraform plan
+  post_build:
+    commands:
+      - echo "Terraform plan ejecutado con exito!"
