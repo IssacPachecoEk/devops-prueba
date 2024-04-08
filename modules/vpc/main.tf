@@ -51,7 +51,7 @@ resource "aws_route_table" "vpc_route_table" {
     tags_all = jsonencode(var.common_tag)
   }
 }
-# Asocia la tabla de ruteo con la subnet privada    por mejorrr!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Asocia la tabla de ruteo con la subnet privada
 resource "aws_route_table_association" "private_association" {
   for_each       = {
     "public_subnet"  = aws_subnet.subnet_public.id,
@@ -59,6 +59,11 @@ resource "aws_route_table_association" "private_association" {
   }
   subnet_id      = each.value
   route_table_id = aws_route_table.vpc_route_table.id
+}
+# puerta de enlace para la subred privada accedan a internet
+resource "aws_nat_gateway" "nat_subnet_private" {
+  connectivity_type = "private"
+  subnet_id         = aws_subnet.subnet_private.id
 }
 
 # se crea grupo de seguridad
