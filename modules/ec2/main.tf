@@ -1,19 +1,19 @@
-module "vpc" {
-  source                     = "../vpc"
-  vpc_cidr_block             = "10.10.0.0/16"
-  vpc_subnet_public          = "10.10.1.0/24"
-  vpc_subnet_private         = "10.10.2.0/24"
-  vpc_route_table_cidr_block = "0.0.0.0/0"
-  vpc_sg_name_instance       = "grupo-seguridad-devops"
-  ingress_ports_list         = [80, 22, 5432]
-  ingress_protocol           = "tcp"
-  sg_ingress_cidr_blocks     = "0.0.0.0/0"
-  egress_port                = 0
-  egress_protocol            = "-1"
-  sg_egress_cidr_blocks      = "0.0.0.0/0"
+# module "vpc" {
+#   source                     = "../vpc"
+#   vpc_cidr_block             = "10.10.0.0/16"
+#   vpc_subnet_public          = "10.10.1.0/24"
+#   vpc_subnet_private         = "10.10.2.0/24"
+#   vpc_route_table_cidr_block = "0.0.0.0/0"
+#   vpc_sg_name_instance       = "grupo-seguridad-devops"
+#   ingress_ports_list         = [80, 22, 5432]
+#   ingress_protocol           = "tcp"
+#   sg_ingress_cidr_blocks     = "0.0.0.0/0"
+#   egress_port                = 0
+#   egress_protocol            = "-1"
+#   sg_egress_cidr_blocks      = "0.0.0.0/0"
 
-  common_tag                 = var.common_tag
-}
+#   common_tag                 = var.common_tag
+# }
 # principal recurso
 resource "aws_instance" "main" {
   #for_each               = { for indice, valor_subnet_id in module.vpc.output_subnet_public : indice => valor_subnet_id }
@@ -36,15 +36,3 @@ resource "aws_instance" "main" {
     tags_all = jsonencode(var.common_tag)
   }
 }
-# Crear una Elastic IP para la NAT Gateway
-# resource "aws_eip" "nat_eip" {
-#   instance = aws_instance.main.id
-#   domain   = "vpc"
-# }
-
-# resource "aws_nat_gateway" "nat_gateway" {
-#   allocation_id = aws_eip.nat_eip.id
-#   subnet_id     = module.vpc.output_subnet_public
-#   depends_on = [aws_eip.nat_eip]
-# }
-

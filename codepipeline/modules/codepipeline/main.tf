@@ -2,7 +2,7 @@
 resource "aws_codepipeline" "cicd_pipeline" {
   name          = var.name_codepipeline
   pipeline_type = var.type_codepipeline
-  role_arn      = var.codepipeline_role_arn # este output --- aws_iam_role.tf-codepipeline-role.arn
+  role_arn      = var.codepipeline_role_arn
   tags          = var.common_tag
   artifact_store {
     type     = "S3"

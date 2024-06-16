@@ -14,6 +14,22 @@ provider "aws" {
     tags = local.common_tag
   }
 }
+module "vpc" {
+  source                     = "../vpc"
+  vpc_cidr_block             = "10.10.0.0/16"
+  vpc_subnet_public          = "10.10.1.0/24"
+  vpc_subnet_private         = "10.10.2.0/24"
+  vpc_route_table_cidr_block = "0.0.0.0/0"
+  vpc_sg_name_instance       = "grupo-seguridad-devops"
+  ingress_ports_list         = [80, 22, 5432]
+  ingress_protocol           = "tcp"
+  sg_ingress_cidr_blocks     = "0.0.0.0/0"
+  egress_port                = 0
+  egress_protocol            = "-1"
+  sg_egress_cidr_blocks      = "0.0.0.0/0"
+
+  common_tag                 = var.common_tag
+}
 module "ec2" {
   source            = "./modules/ec2"
   ami_ec2           = "ami-0aa7d40eeae50c9a9"
